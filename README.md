@@ -1,44 +1,75 @@
-qBittorrent - A BitTorrent client in Qt
-------------------------------------------
+<div align="center">
+  <img src="logo.svg" width="120" height="120" alt="betterBit logo"/>
+  <h1>betterBit</h1>
+  <p>A supercharged qBittorrent fork — smarter columns, cleaner UI, better defaults.</p>
 
-[![GitHub Actions CI Status](https://github.com/qbittorrent/qBittorrent/actions/workflows/ci_ubuntu.yaml/badge.svg)](https://github.com/qbittorrent/qBittorrent/actions)
-[![Coverity Status](https://scan.coverity.com/projects/5494/badge.svg)](https://scan.coverity.com/projects/5494)
-********************************
-### Description:
-qBittorrent is a bittorrent client programmed in C++ / Qt that uses
-libtorrent (sometimes called libtorrent-rasterbar) by Arvid Norberg.
+  [![Based on qBittorrent](https://img.shields.io/badge/based%20on-qBittorrent%205.2.2-blue?style=flat-square)](https://github.com/qbittorrent/qBittorrent)
+  [![Platform](https://img.shields.io/badge/platform-macOS-lightgrey?style=flat-square)]()
+  [![Theme](https://img.shields.io/badge/theme-catppuccin%20mocha-cba6f7?style=flat-square)]()
+</div>
 
-It aims to be a good alternative to all other bittorrent clients
-out there. qBittorrent is fast, stable and provides unicode
-support as well as many features.
+---
 
-The free [IP to Country Lite database](https://db-ip.com/db/download/ip-to-country-lite) by [DB-IP](https://db-ip.com/) is used for resolving the countries of peers. The database is licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
+## What's different
 
-### Installation:
+betterBit is a personal fork of qBittorrent with quality-of-life patches applied on top of the stable release. All changes are in the [`betterBit`](https://github.com/kingomarwashere/betterBit/tree/betterBit) branch.
 
-Refer to the [INSTALL](INSTALL) file.
+### New columns *(right-click the header row to enable)*
 
-### Public key:
-Starting from v3.3.4 all source tarballs and binaries are signed.<br />
-The key currently used is 4096R/[5B7CC9A2](https://pgp.mit.edu/pks/lookup?op=get&search=0x6E4A2D025B7CC9A2) with fingerprint `D8F3DA77AAC6741053599C136E4A2D025B7CC9A2`.<br />
-You can also download it from [here](https://github.com/qbittorrent/qBittorrent/raw/master/5B7CC9A2.asc).<br />
-**PREVIOUSLY** the following key was used to sign the v3.3.4 source tarballs and v3.3.4 Windows installer **only**: 4096R/[520EC6F6](https://pgp.mit.edu/pks/lookup?op=get&search=0xA1ACCAE4520EC6F6) with fingerprint `F4A5FD201B117B1C2AB590E2A1ACCAE4520EC6F6`.<br />
+| Column | Description |
+|--------|-------------|
+| **Added (Relative)** | Shows `2 days ago` instead of a raw timestamp |
+| **Stalled For** | Time since last transfer activity — only appears when the torrent is stalled |
+| **File Types** | Detected content type: `Video`, `Audio`, `Archive`, `Subtitles`, etc. |
+| **Clean Name** | Scene/anime release tags stripped — `Show.Name.S01E01.1080p.BluRay-GROUP` → `Show Name S01E01` |
+| **Download Duration** | Total elapsed download time for the torrent |
 
-### Misc:
-For more information please visit:
-https://www.qbittorrent.org
+### Display improvements
 
-or our wiki here:
-https://wiki.qbittorrent.org
+- **Ratio progress bar** — the Ratio column renders as a fill bar capped at the ratio limit (or 2.0)
+- **Smart rename pre-fill** — the rename dialog opens with the Clean Name already filled in
+- **Free space warning** — row highlights amber when the save path has less free space than the torrent still needs
 
-Use the forum for troubleshooting before reporting bugs:
-https://forum.qbittorrent.org
+### Logic improvements
 
-Please report any bug (or feature request) to:
-https://bugs.qbittorrent.org
+- **ETA smoother** — speed sample buffer doubled (30 → 60 samples, ~1 min rolling average) for calmer ETA estimates
+- **Auto-categorise by tracker** — maps tracker domains to categories automatically on torrent add; configure via `Preferences → BitTorrent → TrackerCategoryMap`
+- **Duplicate detection** — the duplicate torrent dialog now has a *Show in list* button that scrolls to and selects the existing torrent
 
-Official IRC channel:
-[#qbittorrent on irc.libera.chat](ircs://irc.libera.chat:6697/qbittorrent)
+---
 
-------------------------------------------
-sledgehammer999 \<sledgehammer999@qbittorrent.org\>
+## Themes
+
+Two themes are bundled in the [`themes/`](themes/) directory.
+
+| File | Style |
+|------|-------|
+| `catppuccin-mocha.qbtheme` | Dark pastel — default |
+| `cyberpunk.qbtheme` | High-contrast neon dark |
+
+**To apply:** `Settings → Behavior → Interface → Use custom UI theme` → browse to the `.qbtheme` file.
+
+---
+
+## Building
+
+betterBit builds identically to upstream qBittorrent. See [`INSTALL`](INSTALL) for the full dependency list.
+
+```bash
+git clone https://github.com/kingomarwashere/betterBit.git
+cd betterBit
+git checkout betterBit
+
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+```
+
+On macOS the app bundle lands at `build/betterBit.app`.
+
+---
+
+## Upstream
+
+betterBit tracks [qbittorrent/qBittorrent](https://github.com/qbittorrent/qBittorrent). Feature branches are rebased onto new upstream releases before being squashed into the `betterBit` branch.
+
+> All credit for the core client goes to the qBittorrent project and its contributors.

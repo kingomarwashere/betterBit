@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#24273a"/>
+      <stop offset="1" stop-color="#1e1e2e"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="200" y1="185" x2="743" y2="772" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#89b4fa"/>
+      <stop offset="1" stop-color="#cba6f7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="512" cy="512" r="496" fill="url(#bg)" stroke="#313244" stroke-width="32"/>
+
+  <!-- Ascender stroke of lowercase "b" -->
+  <rect x="245" y="185" width="118" height="598" rx="59" fill="url(#mark)"/>
+
+  <!-- Bowl of lowercase "b" -->
+  <circle cx="550" cy="577" r="197" fill="url(#mark)"/>
+
+  <!-- Download chevron cut into bowl (negative space) -->
+  <polyline points="447,547 550,650 653,547"
+    stroke="#1e1e2e" stroke-width="52" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
