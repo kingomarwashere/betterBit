@@ -6,6 +6,10 @@ project(betterBit
     LANGUAGES CXX
 )
 
+# Compatibility alias — upstream cmake files reference qBittorrent_SOURCE/BINARY_DIR
+set(qBittorrent_SOURCE_DIR ${betterBit_SOURCE_DIR})
+set(qBittorrent_BINARY_DIR ${betterBit_BINARY_DIR})
+
 # version requirements - older versions may work, but you are on your own
 set(minBoostVersion 1.76)
 set(minQt6Version 6.6.0)

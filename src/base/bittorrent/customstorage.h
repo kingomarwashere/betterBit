@@ -98,6 +98,9 @@ private:
     {
         Path savePath;
         lt::file_storage files;
+#ifdef TORRENT_USE_RTC
+        lt::renamed_files renamedFiles;
+#endif
         lt::aux::vector<lt::download_priority_t, lt::file_index_t> filePriorities;
     };
     QHash<lt::storage_index_t, StorageData> m_storageData;

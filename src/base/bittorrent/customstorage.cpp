@@ -29,6 +29,13 @@
 #include "customstorage.h"
 
 #include <libtorrent/download_priority.hpp>
+#include <libtorrent/storage_defs.hpp>
+
+// Qt's QHash requires a qHash overload for strong_typedef key types (enforced in Qt 6.6+)
+inline size_t qHash(lt::storage_index_t key, size_t seed = 0) noexcept
+{
+    return ::qHash(static_cast<unsigned int>(key), seed);
+}
 
 #include "base/utils/fs.h"
 #include "common.h"
@@ -69,7 +76,12 @@ lt::storage_holder CustomDiskIOThread::new_torrent(const lt::storage_params &sto
     m_storageData[storageHolder] =
     {
         savePath,
+#ifdef TORRENT_USE_RTC
+        storageParams.files,
+        storageParams.renamed_files,
+#else
         storageParams.mapped_files ? *storageParams.mapped_files : storageParams.files,
+#endif
         storageParams.priorities
     };
 
@@ -156,7 +168,11 @@ void CustomDiskIOThread::async_rename_file(lt::storage_index_t storage, lt::file
             , [=, this, handler = std::move(handler)](const std::string &name, lt::file_index_t index, const lt::storage_error &error)
     {
         if (!error)
+#ifdef TORRENT_USE_RTC
+            m_storageData[storage].renamedFiles.rename_file(m_storageData[storage].files, index, name);
+#else
             m_storageData[storage].files.rename_file(index, name);
+#endif
         handler(name, index, error);
     });
 }
@@ -212,7 +228,11 @@ void CustomDiskIOThread::settings_updated()
 void CustomDiskIOThread::handleCompleteFiles(lt::storage_index_t storage, const Path &savePath)
 {
     const StorageData storageData = m_storageData[storage];
+#ifdef TORRENT_USE_RTC
+    const lt::filenames fileStorage {storageData.files, storageData.renamedFiles};
+#else
     const lt::file_storage &fileStorage = storageData.files;
+#endif
     for (const lt::file_index_t fileIndex : fileStorage.file_range())
     {
         // ignore files that have priority 0
