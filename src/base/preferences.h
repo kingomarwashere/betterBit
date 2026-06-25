@@ -388,6 +388,8 @@ public:
     void setPropVisible(bool visible);
     QByteArray getTrackerListState() const;
     void setTrackerListState(const QByteArray &state);
+    QMap<QString, QString> getTrackerCategoryMap() const;
+    void setTrackerCategoryMap(const QMap<QString, QString> &map);
     QStringList getRssOpenFolders() const;
     void setRssOpenFolders(const QStringList &folders);
     QByteArray getRssSideSplitterState() const;

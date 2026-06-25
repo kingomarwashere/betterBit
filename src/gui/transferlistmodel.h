@@ -90,6 +90,9 @@ public:
         TR_CREATE_DATE,
         TR_DOWNLOAD_DURATION,
         TR_DISPLAY_NAME,
+        TR_ADD_DATE_RELATIVE,
+        TR_STALLED_FOR,
+        TR_FILE_TYPES,
 
         NB_COLUMNS
     };
@@ -101,6 +104,10 @@ public:
     };
 
     explicit TransferListModel(QObject *parent = nullptr);
+
+    static QString cleanName(const QString &rawName);
+
+    QModelIndex indexOfTorrent(const BitTorrent::Torrent *torrent) const;
 
     int rowCount(const QModelIndex &parent = {}) const override;
     int columnCount(const QModelIndex &parent = {}) const override;

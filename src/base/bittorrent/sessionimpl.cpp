@@ -76,6 +76,7 @@
 #include <QString>
 #include <QThread>
 #include <QTimer>
+#include <QUrl>
 #include <QUuid>
 
 #include "base/algorithm.h"
@@ -2675,7 +2676,24 @@ LoadTorrentParams SessionImpl::initLoadTorrentParams(const AddTorrentParams &add
     loadTorrentParams.shareLimitAction = addTorrentParams.shareLimitAction;
     loadTorrentParams.sslParameters = addTorrentParams.sslParameters;
 
-    const QString category = addTorrentParams.category;
+    QString category = addTorrentParams.category;
+    if (category.isEmpty())
+    {
+        // Auto-assign category from tracker domain if the user has configured a mapping
+        const QMap<QString, QString> trackerCatMap = Preferences::instance()->getTrackerCategoryMap();
+        if (!trackerCatMap.isEmpty())
+        {
+            for (const TrackerEntry &entry : source.trackers())
+            {
+                const QString host = QUrl(entry.url).host();
+                if (const auto it = trackerCatMap.constFind(host); it != trackerCatMap.constEnd())
+                {
+                    category = it.value();
+                    break;
+                }
+            }
+        }
+    }
     if (!category.isEmpty() && !m_categories.contains(category) && !addCategory(category))
         loadTorrentParams.category = u""_s;
     else

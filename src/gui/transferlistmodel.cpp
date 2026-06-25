@@ -33,6 +33,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QRegularExpression>
+#include <QStorageInfo>
 
 #include "base/bittorrent/infohash.h"
 #include "base/bittorrent/session.h"
@@ -139,9 +140,77 @@ namespace
 
         return name.simplified();
     }
+
+    QString relativeTimeString(const QDateTime &dt)
+    {
+        if (!dt.isValid())
+            return {};
+        const qint64 secs = dt.secsTo(QDateTime::currentDateTime());
+        if (secs < 0)
+            return {};
+        if (secs < 60)
+            return QObject::tr("Just now");
+        if (secs < 3600)
+            return QObject::tr("%1 minutes ago").arg(secs / 60);
+        if (secs < 86400)
+            return QObject::tr("%1 hours ago").arg(secs / 3600);
+        if (secs < 2592000)
+            return QObject::tr("%1 days ago").arg(secs / 86400);
+        if (secs < 31536000)
+            return QObject::tr("%1 months ago").arg(secs / 2592000);
+        return QObject::tr("%1 years ago").arg(secs / 31536000);
+    }
+
+    QString fileTypesString(const BitTorrent::Torrent *torrent)
+    {
+        if (!torrent->hasMetadata())
+            return {};
+
+        static const QHash<QString, QString> extMap = {
+            {u"mkv"_s, u"Video"_s}, {u"mp4"_s, u"Video"_s}, {u"avi"_s, u"Video"_s},
+            {u"mov"_s, u"Video"_s}, {u"wmv"_s, u"Video"_s}, {u"m4v"_s, u"Video"_s},
+            {u"ts"_s,  u"Video"_s}, {u"flv"_s, u"Video"_s}, {u"webm"_s, u"Video"_s},
+            {u"mp3"_s, u"Audio"_s}, {u"flac"_s, u"Audio"_s}, {u"aac"_s, u"Audio"_s},
+            {u"ogg"_s, u"Audio"_s}, {u"m4a"_s, u"Audio"_s}, {u"wav"_s, u"Audio"_s},
+            {u"zip"_s, u"Archive"_s}, {u"rar"_s, u"Archive"_s}, {u"7z"_s, u"Archive"_s},
+            {u"tar"_s, u"Archive"_s}, {u"gz"_s,  u"Archive"_s}, {u"iso"_s, u"Archive"_s},
+            {u"srt"_s, u"Subtitles"_s}, {u"ass"_s, u"Subtitles"_s}, {u"sub"_s, u"Subtitles"_s},
+            {u"pdf"_s, u"Document"_s}, {u"epub"_s, u"Document"_s}, {u"cbz"_s, u"Document"_s},
+            {u"exe"_s, u"Software"_s}, {u"dmg"_s, u"Software"_s}, {u"pkg"_s, u"Software"_s},
+        };
+
+        QSet<QString> seen;
+        const PathList paths = torrent->filePaths();
+        for (const Path &p : paths)
+        {
+            const QString ext = p.filename().toString().section(u'.', -1).toLower();
+            const QString category = extMap.value(ext, u"Other"_s);
+            seen.insert(category);
+        }
+
+        // Fixed display order
+        QStringList ordered;
+        for (const QString &cat : {u"Video"_s, u"Audio"_s, u"Archive"_s, u"Subtitles"_s, u"Document"_s, u"Software"_s, u"Other"_s})
+            if (seen.contains(cat))
+                ordered << cat;
+        return ordered.join(u", "_s);
+    }
 }
 
 // TransferListModel
+
+QString TransferListModel::cleanName(const QString &rawName)
+{
+    return cleanTorrentName(rawName);
+}
+
+QModelIndex TransferListModel::indexOfTorrent(const BitTorrent::Torrent *torrent) const
+{
+    const int row = m_torrentMap.value(const_cast<BitTorrent::Torrent *>(torrent), -1);
+    if (row < 0)
+        return {};
+    return index(row, TR_NAME);
+}
 
 TransferListModel::TransferListModel(QObject *parent)
     : QAbstractListModel {parent}
@@ -230,6 +299,9 @@ QVariant TransferListModel::headerData(const int section, const Qt::Orientation 
             case TR_SEED_DATE: return tr("Completed On", "Torrent was completed on 01/01/2010 08:00");
             case TR_DOWNLOAD_DURATION: return tr("Download Duration", "Time elapsed between adding and completing the torrent download");
             case TR_DISPLAY_NAME: return tr("Clean Name", "Torrent name with scene/release tags stripped");
+            case TR_ADD_DATE_RELATIVE: return tr("Added", "How long ago the torrent was added, e.g. '2 days ago'");
+            case TR_STALLED_FOR: return tr("Stalled For", "How long the torrent has been stuck with no transfer activity");
+            case TR_FILE_TYPES: return tr("File Types", "Categories of files inside the torrent, e.g. Video, Audio");
             case TR_TRACKER: return tr("Tracker");
             case TR_DLLIMIT: return tr("Down Limit", "i.e: Download limit");
             case TR_UPLIMIT: return tr("Up Limit", "i.e: Upload limit");
@@ -515,6 +587,21 @@ QString TransferListModel::displayValue(const BitTorrent::Torrent *torrent, cons
     }
     case TR_DISPLAY_NAME:
         return cleanTorrentName(torrent->name());
+    case TR_ADD_DATE_RELATIVE:
+        return relativeTimeString(torrent->addedTime());
+    case TR_STALLED_FOR:
+    {
+        const auto state = torrent->state();
+        if (state != BitTorrent::TorrentState::StalledDownloading
+                && state != BitTorrent::TorrentState::StalledUploading)
+            return {};
+        const qint64 secs = torrent->timeSinceActivity();
+        if (secs <= 0)
+            return {};
+        return Utils::Misc::userFriendlyDuration(secs);
+    }
+    case TR_FILE_TYPES:
+        return fileTypesString(torrent);
     }
 
     return {};
@@ -611,6 +698,19 @@ QVariant TransferListModel::internalValue(const BitTorrent::Torrent *torrent, co
     }
     case TR_DISPLAY_NAME:
         return cleanTorrentName(torrent->name());
+    case TR_ADD_DATE_RELATIVE:
+        return torrent->addedTime();
+    case TR_STALLED_FOR:
+    {
+        const auto state = torrent->state();
+        if (state != BitTorrent::TorrentState::StalledDownloading
+                && state != BitTorrent::TorrentState::StalledUploading)
+            return {};
+        const qint64 secs = torrent->timeSinceActivity();
+        return (secs > 0) ? QVariant(secs) : QVariant();
+    }
+    case TR_FILE_TYPES:
+        return fileTypesString(torrent);
     }
 
     return {};
@@ -628,9 +728,19 @@ QVariant TransferListModel::data(const QModelIndex &index, const int role) const
     switch (role)
     {
     case Qt::ForegroundRole:
+    {
+        // Warn in amber when the save path has less free space than the torrent still needs
+        const qint64 remaining = torrent->remainingSize();
+        if (remaining > 0)
+        {
+            const QStorageInfo storage(torrent->savePath().toString());
+            if (storage.isValid() && storage.bytesAvailable() < remaining)
+                return QColor(0xFF, 0xA5, 0x00); // amber
+        }
         if (m_useTorrentStatesColors)
             return m_stateThemeColors.value(torrent->state());
         break;
+    }
     case Qt::DisplayRole:
         return displayValue(torrent, index.column());
     case UnderlyingDataRole:
