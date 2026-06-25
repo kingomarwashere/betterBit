@@ -29,6 +29,9 @@
 
 #include "guiaddtorrentmanager.h"
 
+#include <QAbstractButton>
+#include <QMessageBox>
+#include <QPushButton>
 #include <QScreen>
 
 #include "base/bittorrent/session.h"
@@ -226,12 +229,13 @@ bool GUIAddTorrentManager::processTorrent(const QString &source
                 QPushButton *locateBtn = msgBox.addButton(tr("Show in list"), QMessageBox::ActionRole);
                 msgBox.setDefaultButton(mergeTrackers ? mergeBtn : locateBtn);
                 msgBox.exec();
-                if (msgBox.clickedButton() == mergeBtn)
+                QAbstractButton *const clicked = msgBox.clickedButton();
+                if (clicked == mergeBtn)
                 {
                     torrent->addTrackers(torrentDescr.trackers());
                     torrent->addUrlSeeds(torrentDescr.urlSeeds());
                 }
-                if (msgBox.clickedButton() == mergeBtn || msgBox.clickedButton() == locateBtn)
+                if (clicked == mergeBtn || clicked == locateBtn)
                 {
                     app()->mainWindow()->transferListWidget()->scrollToAndSelect(torrent);
                     app()->mainWindow()->raise();

@@ -183,7 +183,7 @@ namespace
         const PathList paths = torrent->filePaths();
         for (const Path &p : paths)
         {
-            const QString ext = p.filename().toString().section(u'.', -1).toLower();
+            const QString ext = p.filename().section(u'.', -1).toLower();
             const QString category = extMap.value(ext, u"Other"_s);
             seen.insert(category);
         }

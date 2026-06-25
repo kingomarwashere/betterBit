@@ -2676,24 +2676,7 @@ LoadTorrentParams SessionImpl::initLoadTorrentParams(const AddTorrentParams &add
     loadTorrentParams.shareLimitAction = addTorrentParams.shareLimitAction;
     loadTorrentParams.sslParameters = addTorrentParams.sslParameters;
 
-    QString category = addTorrentParams.category;
-    if (category.isEmpty())
-    {
-        // Auto-assign category from tracker domain if the user has configured a mapping
-        const QMap<QString, QString> trackerCatMap = Preferences::instance()->getTrackerCategoryMap();
-        if (!trackerCatMap.isEmpty())
-        {
-            for (const TrackerEntry &entry : source.trackers())
-            {
-                const QString host = QUrl(entry.url).host();
-                if (const auto it = trackerCatMap.constFind(host); it != trackerCatMap.constEnd())
-                {
-                    category = it.value();
-                    break;
-                }
-            }
-        }
-    }
+    const QString category = addTorrentParams.category;
     if (!category.isEmpty() && !m_categories.contains(category) && !addCategory(category))
         loadTorrentParams.category = u""_s;
     else
@@ -2800,6 +2783,28 @@ bool SessionImpl::addTorrent_impl(const TorrentDescriptor &source, const AddTorr
         cancelDownloadMetadata(altID);
 
     LoadTorrentParams loadTorrentParams = initLoadTorrentParams(addTorrentParams);
+
+    // Auto-assign category from tracker domain when no category was explicitly set
+    if (loadTorrentParams.category.isEmpty())
+    {
+        const QMap<QString, QString> trackerCatMap = Preferences::instance()->getTrackerCategoryMap();
+        if (!trackerCatMap.isEmpty())
+        {
+            for (const TrackerEntry &entry : source.trackers())
+            {
+                const QString host = QUrl(entry.url).host();
+                if (const auto it = trackerCatMap.constFind(host); it != trackerCatMap.constEnd())
+                {
+                    const QString autoCategory = it.value();
+                    if (!m_categories.contains(autoCategory))
+                        addCategory(autoCategory);
+                    loadTorrentParams.category = autoCategory;
+                    break;
+                }
+            }
+        }
+    }
+
     lt::add_torrent_params &p = loadTorrentParams.ltAddTorrentParams;
     p = source.ltAddTorrentParams();
 
