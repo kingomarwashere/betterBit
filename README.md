@@ -53,18 +53,37 @@ Two themes are bundled in the [`themes/`](themes/) directory.
 
 ## Building
 
-betterBit builds identically to upstream qBittorrent. See [`INSTALL`](INSTALL) for the full dependency list.
+See [`INSTALL`](INSTALL) for the full dependency list (Qt6, Boost, OpenSSL, etc.).
+
+### Standard build
 
 ```bash
 git clone https://github.com/kingomarwashere/betterBit.git
-cd betterBit
-git checkout betterBit
+cd betterBit && git checkout betterBit
 
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel
 ```
 
 On macOS the app bundle lands at `build/betterBit.app`.
+
+### With WebTorrent (WebRTC peer support)
+
+WebTorrent lets betterBit connect to browser-based peers (e.g. from [webtorrent.io](https://webtorrent.io)).
+The Homebrew libtorrent doesn't include it — run the bundled script to build the right deps first:
+
+```bash
+# one-time: builds libdatachannel + libtorrent with webtorrent=ON (~10 min)
+./scripts/build-webtorrent-deps.sh
+
+# then build betterBit against the custom libtorrent
+cmake -B build -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_PREFIX_PATH="${HOME}/.local/betterbit-deps" \
+      -DWEBTORRENT=ON
+cmake --build build --parallel
+```
+
+WebTorrent is **on by default** in the session when the library supports it — no extra configuration needed.
 
 ---
 

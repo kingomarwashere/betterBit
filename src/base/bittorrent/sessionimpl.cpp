@@ -1750,6 +1750,12 @@ void SessionImpl::initializeNativeSession()
     }
 #endif
 
+#ifdef TORRENT_USE_RTC
+    // WebTorrent (WebRTC) peer support — allows connecting to browser-based peers.
+    // Enabled by default in betterBit when libtorrent is built with webtorrent=ON.
+    pack.set_bool(lt::settings_pack::enable_webtorrent, true);
+#endif
+
     lt::session_params sessionParams {std::move(pack), {}};
 #ifdef QBT_USES_LIBTORRENT2
     switch (diskIOType())
