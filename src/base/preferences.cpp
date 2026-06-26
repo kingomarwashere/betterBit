@@ -29,6 +29,8 @@
 
 #include "preferences.h"
 
+#include <QCoreApplication>
+
 #include <algorithm>
 #include <chrono>
 
@@ -110,7 +112,7 @@ void Preferences::setLocale(const QString &locale)
 
 bool Preferences::useCustomUITheme() const
 {
-    return value(u"Preferences/General/UseCustomUITheme"_s, false) && !customUIThemePath().isEmpty();
+    return value(u"Preferences/General/UseCustomUITheme"_s, true) && !customUIThemePath().isEmpty();
 }
 
 void Preferences::setUseCustomUITheme(const bool use)
@@ -123,7 +125,16 @@ void Preferences::setUseCustomUITheme(const bool use)
 
 Path Preferences::customUIThemePath() const
 {
-    return value<Path>(u"Preferences/General/CustomUIThemePath"_s);
+    const Path stored = value<Path>(u"Preferences/General/CustomUIThemePath"_s);
+    if (!stored.isEmpty())
+        return stored;
+#ifdef Q_OS_MACOS
+    // Return the catppuccin-mocha theme bundled in the app Resources
+    const QString resources = QCoreApplication::applicationDirPath() + u"/../Resources"_s;
+    return Path(resources + u"/catppuccin-mocha.qbtheme"_s);
+#else
+    return {};
+#endif
 }
 
 void Preferences::setCustomUIThemePath(const Path &path)
