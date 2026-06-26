@@ -67,9 +67,9 @@ target_link_libraries(qbt_app PRIVATE
 
 set_target_properties(qbt_app PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 if (GUI)
-    set_target_properties(qbt_app PROPERTIES OUTPUT_NAME qbittorrent)
+    set_target_properties(qbt_app PROPERTIES OUTPUT_NAME betterBit)
 else()
-    set_target_properties(qbt_app PROPERTIES OUTPUT_NAME qbittorrent-nox)
+    set_target_properties(qbt_app PROPERTIES OUTPUT_NAME betterBit-nox)
 endif()
 
 # Additional platform specific configuration
@@ -83,7 +83,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         "${qBittorrent_SOURCE_DIR}/dist/mac/qt.conf"
         "${qBittorrent_SOURCE_DIR}/dist/mac/qBitTorrentDocument.icns"
 		"${qBittorrent_SOURCE_DIR}/dist/mac/qBitTorrentIncompleteData.icns"
-        "${qBittorrent_SOURCE_DIR}/dist/mac/qbittorrent_mac.icns"
+        "${qBittorrent_SOURCE_DIR}/dist/mac/betterBit_mac.icns"
             PROPERTIES
                 MACOSX_PACKAGE_LOCATION Resources
     )
@@ -106,7 +106,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(MACOSX_DEPLOYMENT_TARGET ${CMAKE_OSX_DEPLOYMENT_TARGET})
     set_target_properties(qbt_app PROPERTIES
         MACOSX_BUNDLE ON
-        MACOSX_BUNDLE_BUNDLE_NAME "qBittorrent"
+        MACOSX_BUNDLE_BUNDLE_NAME "betterBit"
         MACOSX_BUNDLE_INFO_PLIST ${qBittorrent_SOURCE_DIR}/dist/mac/Info.plist
     )
     target_sources(qbt_app PRIVATE
@@ -114,7 +114,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         ${qBittorrent_SOURCE_DIR}/dist/mac/qt.conf
         ${qBittorrent_SOURCE_DIR}/dist/mac/qBitTorrentDocument.icns
 		${qBittorrent_SOURCE_DIR}/dist/mac/qBitTorrentIncompleteData.icns
-        ${qBittorrent_SOURCE_DIR}/dist/mac/qbittorrent_mac.icns
+        ${qBittorrent_SOURCE_DIR}/dist/mac/betterBit_mac.icns
     )
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set_target_properties(qbt_app PROPERTIES WIN32_EXECUTABLE ON)

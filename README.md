@@ -4,8 +4,11 @@
   <p>A supercharged qBittorrent fork — smarter columns, cleaner UI, better defaults.</p>
 
   [![Based on qBittorrent](https://img.shields.io/badge/based%20on-qBittorrent%205.2.2-blue?style=flat-square)](https://github.com/qbittorrent/qBittorrent)
-  [![Platform](https://img.shields.io/badge/platform-macOS-lightgrey?style=flat-square)]()
+  [![Platform](https://img.shields.io/badge/platform-macOS%20arm64-lightgrey?style=flat-square)]()
   [![Theme](https://img.shields.io/badge/theme-catppuccin%20mocha-cba6f7?style=flat-square)]()
+  [![WebTorrent](https://img.shields.io/badge/WebTorrent-enabled-89b4fa?style=flat-square)]()
+
+  **[⬇ Download for macOS](https://github.com/kingomarwashere/betterBit/releases/latest)** &nbsp;·&nbsp; **[betterbit.theradicalparty.com](https://betterbit.theradicalparty.com)**
 </div>
 
 ---

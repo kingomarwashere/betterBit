@@ -73,7 +73,7 @@
 	<key>CFBundleName</key>
 	<string>betterBit</string>
 	<key>CFBundleIconFile</key>
-	<string>qbittorrent_mac.icns</string>
+	<string>betterBit_mac.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
