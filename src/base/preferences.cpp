@@ -702,7 +702,7 @@ void Preferences::setSchedulerDays(const Scheduler::Days days)
 // Search
 bool Preferences::isSearchEnabled() const
 {
-    return value(u"Preferences/Search/SearchEnabled"_s, false);
+    return value(u"Preferences/Search/SearchEnabled"_s, true);
 }
 
 void Preferences::setSearchEnabled(const bool enabled)

@@ -40,7 +40,7 @@ betterBit is a personal fork of qBittorrent with quality-of-life patches applied
 
 ## Search
 
-betterBit ships 18 search engine plugins out of the box — no manual installation needed. Enable the search panel via **View → Search Engine**.
+betterBit ships 18 search engine plugins out of the box and opens the search panel by default — just start typing.
 
 | Plugin | Source |
 |--------|--------|
@@ -95,7 +95,7 @@ cd betterBit && git checkout betterBit
 ./scripts/build-webtorrent-deps.sh
 ```
 
-Builds libtorrent from the `webtorrent-cleanups` branch (which includes libdatachannel) and installs everything to `~/.local/betterbit-deps`.
+Builds libtorrent `v2.1.0-rc2` (which bundles libdatachannel) and installs everything to `~/.local/betterbit-deps`.
 
 ### Step 2 — build betterBit
 
