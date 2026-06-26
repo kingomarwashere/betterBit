@@ -541,6 +541,11 @@ void SearchPluginManager::updateNova()
     updateFile(Path(u"nova2dl.py"_s));
     updateFile(Path(u"novaprinter.py"_s));
     updateFile(Path(u"socks.py"_s));
+
+    // Install bundled engine plugins from Qt resources
+    const QDir enginesResourceDir {u":/searchengine/nova3/engines"_s};
+    for (const QString &filename : enginesResourceDir.entryList(QDir::Files))
+        updateFile(Path(u"engines"_s) / Path(filename));
 }
 
 void SearchPluginManager::update()

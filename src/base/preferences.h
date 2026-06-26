@@ -419,6 +419,8 @@ public:
     void setHideZeroStatusFilters(bool hide);
     QByteArray getTransHeaderState() const;
     void setTransHeaderState(const QByteArray &state);
+    bool getBetterBitColumnDefaultsApplied() const;
+    void setBetterBitColumnDefaultsApplied();
     bool getRegexAsFilteringPatternForTransferList() const;
     void setRegexAsFilteringPatternForTransferList(bool checked);
     int getToolbarTextPosition() const;

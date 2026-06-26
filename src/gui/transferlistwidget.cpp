@@ -121,6 +121,10 @@ TransferListWidget::TransferListWidget(IGUIApplication *app, QWidget *parent)
 {
     // Load settings
     const bool columnLoaded = loadSettings();
+    // betterBit: apply minimal column defaults on first run, even if prior
+    // qBittorrent settings exist. Version key prevents re-applying after the
+    // user has customised their columns.
+    const bool defaultsVersioned = Preferences::instance()->getBetterBitColumnDefaultsApplied();
 
     // Create and apply delegate
     setItemDelegate(new TransferListDelegate(this));
@@ -155,8 +159,9 @@ TransferListWidget::TransferListWidget(IGUIApplication *app, QWidget *parent)
     // Default hidden columns — betterBit ships with a minimal view:
     // only Clean Name (TR_DISPLAY_NAME) and Progress (TR_PROGRESS) visible.
     // All other columns are available via right-click on the header.
-    if (!columnLoaded)
+    if (!columnLoaded || !defaultsVersioned)
     {
+        Preferences::instance()->setBetterBitColumnDefaultsApplied();
         // hide everything except TR_DISPLAY_NAME and TR_PROGRESS
         setColumnHidden(TransferListModel::TR_QUEUE_POSITION, true);
         setColumnHidden(TransferListModel::TR_NAME, true);

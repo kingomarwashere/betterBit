@@ -5,5 +5,23 @@
         <file>nova3/nova2dl.py</file>
         <file>nova3/novaprinter.py</file>
         <file>nova3/socks.py</file>
+        <file>nova3/engines/__init__.py</file>
+        <file>nova3/engines/bitsearch.py</file>
+        <file>nova3/engines/bt4g.py</file>
+        <file>nova3/engines/ettv.py</file>
+        <file>nova3/engines/eztv.py</file>
+        <file>nova3/engines/kickasstorrents.py</file>
+        <file>nova3/engines/leetx.py</file>
+        <file>nova3/engines/limetorrents.py</file>
+        <file>nova3/engines/linuxtracker.py</file>
+        <file>nova3/engines/nyaa.py</file>
+        <file>nova3/engines/nyaasi.py</file>
+        <file>nova3/engines/piratebay.py</file>
+        <file>nova3/engines/snowfl.py</file>
+        <file>nova3/engines/solidtorrents.py</file>
+        <file>nova3/engines/torlock.py</file>
+        <file>nova3/engines/torrentdownload.py</file>
+        <file>nova3/engines/torrentgalaxy.py</file>
+        <file>nova3/engines/torrentscsv.py</file>
     </qresource>
 </RCC>

@@ -2014,6 +2014,16 @@ QByteArray Preferences::getTransHeaderState() const
     return value<QByteArray>(u"GUI/Qt6/TransferList/HeaderState"_s);
 }
 
+bool Preferences::getBetterBitColumnDefaultsApplied() const
+{
+    return value<bool>(u"betterBit/ColumnDefaultsV1"_s, false);
+}
+
+void Preferences::setBetterBitColumnDefaultsApplied()
+{
+    setValue(u"betterBit/ColumnDefaultsV1"_s, true);
+}
+
 void Preferences::setTransHeaderState(const QByteArray &state)
 {
     if (state == getTransHeaderState())
