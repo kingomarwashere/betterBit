@@ -373,9 +373,12 @@ void PropertiesWidget::readSettings()
     m_tabBar->setCurrentIndex(currentTab);
     if (!visible)
     {
-        // Defer until after the widget is shown so geometry is valid and
-        // the tab bar buttons remain visible as the expand toggle.
-        QTimer::singleShot(0, this, [this]() { setVisibility(false); });
+        // Hide the entire widget (tab bar + content) so nothing shows at the bottom.
+        // Use QTimer to defer until after the splitter has laid out, so setSizes works.
+        QTimer::singleShot(0, this, [this]()
+        {
+            setVisible(false);
+        });
     }
 }
 

@@ -372,14 +372,16 @@ MainWindow::MainWindow(IGUIApplication *app, const WindowState initialState, con
     m_ui->actionTopToolBar->setChecked(pref->isToolbarDisplayed());
     m_ui->actionShowStatusbar->setChecked(pref->isStatusbarDisplayed());
 
-    // betterBit: Details panel toggle in View menu
+    // betterBit: Details panel toggle — completely shows/hides the whole panel
     auto *detailsAction = new QAction(tr("Details Panel"), this);
     detailsAction->setCheckable(true);
     detailsAction->setChecked(pref->getPropVisible());
     detailsAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));
     connect(detailsAction, &QAction::triggered, this, [this](const bool checked)
     {
-        m_propertiesWidget->setVisibility(checked);
+        m_propertiesWidget->setVisible(checked);
+        if (checked)
+            m_propertiesWidget->setVisibility(true);
         Preferences::instance()->setPropVisible(checked);
     });
     m_ui->menuView->addSeparator();
