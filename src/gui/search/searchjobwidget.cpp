@@ -205,6 +205,15 @@ SearchJobWidget::SearchJobWidget(const QString &id, IGUIApplication *app, QWidge
     connect(m_ui->resultsBrowser, &QAbstractItemView::doubleClicked, this, &SearchJobWidget::onItemDoubleClicked);
 
     connect(UIThemeManager::instance(), &UIThemeManager::themeChanged, this, &SearchJobWidget::onUIThemeChanged);
+
+    // betterBit: hide seed/size filters by default — clean interface OOB
+    m_ui->filterMode->setVisible(false);
+    m_ui->minSeeds->setVisible(false);
+    m_ui->maxSeeds->setVisible(false);
+    m_ui->minSize->setVisible(false);
+    m_ui->maxSize->setVisible(false);
+    m_ui->minSizeUnit->setVisible(false);
+    m_ui->maxSizeUnit->setVisible(false);
 }
 
 SearchJobWidget::SearchJobWidget(const QString &id, const QString &searchPattern

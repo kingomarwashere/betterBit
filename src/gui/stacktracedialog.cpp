@@ -53,7 +53,7 @@ void StacktraceDialog::setText(const QString &signalName, const QString &stacktr
 
     const QString htmlStr = QStringLiteral(
         "<p align=center><b><font size=7 color=red>"
-        "qBittorrent has crashed"
+        "betterBit has crashed"
         "</font></b></p>"
         "<font size=4><p>"
         "Please file a bug report at "
@@ -62,7 +62,7 @@ void StacktraceDialog::setText(const QString &signalName, const QString &stacktr
         "</p></font>"
         "<br/><hr><br/>"
         "<p align=center><font size=4>"
-        "qBittorrent version: " QBT_VERSION " (%1-bit)<br/>"
+        "betterBit version: " QBT_VERSION " (%1-bit)<br/>"
         "Libtorrent version: %2<br/>"
         "Qt version: " QT_VERSION_STR "<br/>"
         "Boost version: %3<br/>"
