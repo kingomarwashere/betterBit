@@ -37,11 +37,17 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QBoxLayout>
+#include <QComboBox>
+#include <QCoreApplication>
 #include <QDebug>
 #include <QDesktopServices>
 #include <QDialogButtonBox>
+#include <QDir>
 #include <QEvent>
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QMessageBox>
 #include <QStyleFactory>
 #include <QSystemTrayIcon>
@@ -264,8 +270,53 @@ void OptionsDialog::loadBehaviorTabOptions()
     m_ui->checkUseCustomTheme->setChecked(Preferences::instance()->useCustomUITheme());
     m_ui->customThemeFilePath->setSelectedPath(Preferences::instance()->customUIThemePath());
     m_ui->customThemeFilePath->setMode(FileSystemPathEdit::Mode::FileOpen);
-    m_ui->customThemeFilePath->setDialogCaption(tr("Select qBittorrent UI Theme file"));
-    m_ui->customThemeFilePath->setFileNameFilter(tr("qBittorrent UI Theme file (*.qbtheme config.json)"));
+    m_ui->customThemeFilePath->setDialogCaption(tr("Select betterBit UI Theme file"));
+    m_ui->customThemeFilePath->setFileNameFilter(tr("betterBit UI Theme file (*.qbtheme config.json)"));
+
+    // betterBit theme picker — scan bundle Resources for .qbtheme files
+    m_themeCombo = new QComboBox(this);
+    const QString resourcesDir = QCoreApplication::applicationDirPath() + u"/../Resources"_s;
+    const QStringList themeFiles = QDir(resourcesDir).entryList({u"*.qbtheme"_s}, QDir::Files, QDir::Name);
+    const Path currentThemePath = Preferences::instance()->customUIThemePath();
+    int selectedIdx = 0;
+    for (const QString &file : themeFiles) {
+        QString label = file;
+        label.remove(u".qbtheme"_s);
+        label.replace(u'-', u' ');
+        label.replace(u'_', u' ');
+        label[0] = label[0].toUpper();
+        const QString fullPath = resourcesDir + u"/"_s + file;
+        m_themeCombo->addItem(label, fullPath);
+        if (currentThemePath == Path(fullPath))
+            selectedIdx = m_themeCombo->count() - 1;
+    }
+    m_themeCombo->addItem(tr("Custom..."), QString());
+    if (currentThemePath.isEmpty() || themeFiles.isEmpty() ||
+        !currentThemePath.toString().startsWith(resourcesDir))
+        selectedIdx = m_themeCombo->count() - 1;
+    m_themeCombo->setCurrentIndex(selectedIdx);
+
+    // Insert combo above the file path picker in its parent layout
+    if (auto *layout = qobject_cast<QBoxLayout *>(m_ui->customThemeFilePath->parentWidget()->layout())) {
+        const int idx = layout->indexOf(m_ui->customThemeFilePath);
+        if (idx >= 0) {
+            auto *row = new QHBoxLayout;
+            row->addWidget(new QLabel(tr("Theme:"), this));
+            row->addWidget(m_themeCombo, 1);
+            layout->insertLayout(idx, row);
+        }
+    }
+
+    connect(m_themeCombo, &QComboBox::currentIndexChanged, this, [this](int i) {
+        const QString path = m_themeCombo->itemData(i).toString();
+        const bool isCustom = path.isEmpty();
+        m_ui->customThemeFilePath->setVisible(isCustom);
+        if (!isCustom)
+            m_ui->customThemeFilePath->setSelectedPath(Path(path));
+        enableApplyButton();
+    });
+    // Apply initial visibility
+    m_ui->customThemeFilePath->setVisible(m_themeCombo->currentData().toString().isEmpty());
 #if (defined(Q_OS_UNIX) && !defined(Q_OS_MACOS))
     m_ui->checkUseSystemIcon->setChecked(pref->useSystemIcons());
 #else

@@ -372,7 +372,7 @@ void Preferences::setBdecodeTokenLimit(const int value)
 
 bool Preferences::isToolbarDisplayed() const
 {
-    return value(u"Preferences/General/ToolbarDisplayed"_s, true);
+    return value(u"Preferences/General/ToolbarDisplayed"_s, false);
 }
 
 void Preferences::setToolbarDisplayed(const bool displayed)
@@ -398,7 +398,7 @@ void Preferences::setTorrentContentDragEnabled(const bool enabled)
 
 bool Preferences::isStatusbarDisplayed() const
 {
-    return value(u"Preferences/General/StatusbarDisplayed"_s, true);
+    return value(u"Preferences/General/StatusbarDisplayed"_s, false);
 }
 
 void Preferences::setStatusbarDisplayed(const bool displayed)

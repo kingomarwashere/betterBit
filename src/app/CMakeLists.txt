@@ -85,6 +85,8 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 		"${qBittorrent_SOURCE_DIR}/dist/mac/qBitTorrentIncompleteData.icns"
         "${qBittorrent_SOURCE_DIR}/dist/mac/betterBit_mac.icns"
         "${qBittorrent_SOURCE_DIR}/themes/catppuccin-mocha.qbtheme"
+        "${qBittorrent_SOURCE_DIR}/themes/nothing-phone.qbtheme"
+        "${qBittorrent_SOURCE_DIR}/themes/radicalparty.qbtheme"
             PROPERTIES
                 MACOSX_PACKAGE_LOCATION Resources
     )
@@ -117,6 +119,8 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 		${qBittorrent_SOURCE_DIR}/dist/mac/qBitTorrentIncompleteData.icns
         ${qBittorrent_SOURCE_DIR}/dist/mac/betterBit_mac.icns
         ${qBittorrent_SOURCE_DIR}/themes/catppuccin-mocha.qbtheme
+        ${qBittorrent_SOURCE_DIR}/themes/nothing-phone.qbtheme
+        ${qBittorrent_SOURCE_DIR}/themes/radicalparty.qbtheme
     )
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set_target_properties(qbt_app PROPERTIES WIN32_EXECUTABLE ON)

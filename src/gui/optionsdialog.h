@@ -35,6 +35,8 @@
 #include "base/settingvalue.h"
 #include "guiapplicationcomponent.h"
 
+class QBoxLayout;
+class QComboBox;
 class QListWidgetItem;
 
 class AdvancedSettings;
@@ -205,6 +207,7 @@ private:
     bool schedTimesOk();
 
     Ui::OptionsDialog *m_ui = nullptr;
+    QComboBox *m_themeCombo = nullptr;
     SettingValue<QSize> m_storeDialogSize;
     SettingValue<QStringList> m_storeHSplitterSize;
     SettingValue<int> m_storeLastViewedPage;
