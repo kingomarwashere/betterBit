@@ -39,6 +39,7 @@
 #include <QPointer>
 #include <QSplitter>
 #include <QShortcut>
+#include <QTimer>
 #include <QStackedWidget>
 #include <QUrl>
 
@@ -175,7 +176,8 @@ void PropertiesWidget::setVisibility(const bool visible)
 {
     if (!visible && (m_state == VISIBLE))
     {
-        const int tabBarHeight = m_tabBar->geometry().height(); // take height before hiding
+        int tabBarHeight = m_tabBar->geometry().height(); // take height before hiding
+        if (tabBarHeight <= 0) tabBarHeight = 28; // guard: geometry not ready yet
         auto *hSplitter = static_cast<QSplitter *>(parentWidget());
         m_ui->stackedProperties->setVisible(false);
         m_slideSizes = hSplitter->sizes();
@@ -363,14 +365,18 @@ void PropertiesWidget::readSettings()
         hSplitter->setSizes(m_slideSizes);
     }
     const int currentTab = pref->getPropCurTab();
-    // betterBit: force-hide the properties panel on first run regardless of stored state
+    // betterBit: force-hide on first run regardless of stored state
     const bool visible = pref->getBetterBitColumnDefaultsApplied()
                          ? pref->getPropVisible()
                          : false;
     m_ui->filesList->header()->restoreState(pref->getPropFileListState());
     m_tabBar->setCurrentIndex(currentTab);
     if (!visible)
-        setVisibility(false);
+    {
+        // Defer until after the widget is shown so geometry is valid and
+        // the tab bar buttons remain visible as the expand toggle.
+        QTimer::singleShot(0, this, [this]() { setVisibility(false); });
+    }
 }
 
 void PropertiesWidget::saveSettings()

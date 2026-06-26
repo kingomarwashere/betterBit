@@ -371,6 +371,19 @@ MainWindow::MainWindow(IGUIApplication *app, const WindowState initialState, con
     // View settings
     m_ui->actionTopToolBar->setChecked(pref->isToolbarDisplayed());
     m_ui->actionShowStatusbar->setChecked(pref->isStatusbarDisplayed());
+
+    // betterBit: Details panel toggle in View menu
+    auto *detailsAction = new QAction(tr("Details Panel"), this);
+    detailsAction->setCheckable(true);
+    detailsAction->setChecked(pref->getPropVisible());
+    detailsAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));
+    connect(detailsAction, &QAction::triggered, this, [this](const bool checked)
+    {
+        m_propertiesWidget->setVisibility(checked);
+        Preferences::instance()->setPropVisible(checked);
+    });
+    m_ui->menuView->addSeparator();
+    m_ui->menuView->addAction(detailsAction);
     m_ui->actionSpeedInTitleBar->setChecked(pref->speedInTitleBar());
     m_ui->actionRSSReader->setChecked(pref->isRSSWidgetEnabled());
     m_ui->actionSearchWidget->setChecked(pref->isSearchEnabled());
