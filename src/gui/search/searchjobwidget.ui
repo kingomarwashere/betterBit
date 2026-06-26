@@ -120,6 +120,9 @@
       </spacer>
      </item>
      <item>
+      <widget class="QComboBox" name="qualityFilter"/>
+     </item>
+     <item>
       <widget class="QLabel" name="label_3">
        <property name="toolTip">
         <string>Set minimum and maximum allowed size of a torrent</string>

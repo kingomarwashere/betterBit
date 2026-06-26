@@ -110,6 +110,7 @@ private:
     void updateNameFilter();
     void updateSeedsFilter();
     void updateSizeFilter();
+    void updateQualityFilter();
     void filterSearchResults(const QString &name);
     void showFilterContextMenu();
     void contextMenuEvent(QContextMenuEvent *event) override;

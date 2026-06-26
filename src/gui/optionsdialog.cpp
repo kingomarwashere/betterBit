@@ -1378,10 +1378,12 @@ void OptionsDialog::loadSearchTabOptions()
     m_ui->groupStoreOpenedTabs->setChecked(pref->storeOpenedSearchTabs());
     m_ui->checkStoreTabsSearchResults->setChecked(pref->storeOpenedSearchTabResults());
     m_ui->searchHistoryLengthSpinBox->setValue(pref->searchHistoryLength());
+    m_ui->checkSearchQualityFilter->setChecked(pref->isSearchQualityFilterEnabled());
 
     connect(m_ui->groupStoreOpenedTabs, &QGroupBox::toggled, this, &OptionsDialog::enableApplyButton);
     connect(m_ui->checkStoreTabsSearchResults, &QCheckBox::toggled, this, &OptionsDialog::enableApplyButton);
     connect(m_ui->searchHistoryLengthSpinBox, qSpinBoxValueChanged, this, &OptionsDialog::enableApplyButton);
+    connect(m_ui->checkSearchQualityFilter, &QCheckBox::toggled, this, &OptionsDialog::enableApplyButton);
 }
 
 void OptionsDialog::saveSearchTabOptions() const
@@ -1391,6 +1393,7 @@ void OptionsDialog::saveSearchTabOptions() const
     pref->setStoreOpenedSearchTabs(m_ui->groupStoreOpenedTabs->isChecked());
     pref->setStoreOpenedSearchTabResults(m_ui->checkStoreTabsSearchResults->isChecked());
     pref->setSearchHistoryLength(m_ui->searchHistoryLengthSpinBox->value());
+    pref->setSearchQualityFilterEnabled(m_ui->checkSearchQualityFilter->isChecked());
 }
 
 #ifndef DISABLE_WEBUI

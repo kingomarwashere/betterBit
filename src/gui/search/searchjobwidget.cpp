@@ -206,14 +206,25 @@ SearchJobWidget::SearchJobWidget(const QString &id, IGUIApplication *app, QWidge
 
     connect(UIThemeManager::instance(), &UIThemeManager::themeChanged, this, &SearchJobWidget::onUIThemeChanged);
 
-    // betterBit: hide seed/size filters by default — clean interface OOB
+    connect(m_ui->qualityFilter, qOverload<int>(&QComboBox::currentIndexChanged), this, &SearchJobWidget::updateQualityFilter);
+
+    // betterBit: hide seed/size filters — clean interface
     m_ui->filterMode->setVisible(false);
+    m_ui->label_5->setVisible(false);  // "Search in:"
+    m_ui->label->setVisible(false);    // "Seeds:"
     m_ui->minSeeds->setVisible(false);
+    m_ui->label_4->setVisible(false);  // "to" (seeds)
     m_ui->maxSeeds->setVisible(false);
+    m_ui->label_3->setVisible(false);  // "Size:"
     m_ui->minSize->setVisible(false);
     m_ui->maxSize->setVisible(false);
     m_ui->minSizeUnit->setVisible(false);
     m_ui->maxSizeUnit->setVisible(false);
+    m_ui->label_2->setVisible(false);  // "to" (size)
+
+    // betterBit: show quality filter only when user enables it in Options > Search
+    const bool qualityFilterEnabled = Preferences::instance()->isSearchQualityFilterEnabled();
+    m_ui->qualityFilter->setVisible(qualityFilterEnabled);
 }
 
 SearchJobWidget::SearchJobWidget(const QString &id, const QString &searchPattern
@@ -510,6 +521,13 @@ void SearchJobWidget::updateSizeFilter()
     updateResultsCount();
 }
 
+void SearchJobWidget::updateQualityFilter()
+{
+    const QString quality = m_ui->qualityFilter->currentData().toString();
+    m_proxyModel->setQualityFilter(quality);
+    updateResultsCount();
+}
+
 void SearchJobWidget::fillFilterComboBoxes()
 {
     using Utils::Misc::unitString;
@@ -533,6 +551,13 @@ void SearchJobWidget::fillFilterComboBoxes()
 
     m_ui->maxSize->setValue(-1);
     m_ui->maxSizeUnit->setCurrentIndex(static_cast<int>(SizeUnit::GibiByte));
+
+    m_ui->qualityFilter->clear();
+    m_ui->qualityFilter->addItem(tr("Any Quality"), QString());
+    m_ui->qualityFilter->addItem(u"480p"_s, u"480p"_s);
+    m_ui->qualityFilter->addItem(u"720p"_s, u"720p"_s);
+    m_ui->qualityFilter->addItem(u"1080p"_s, u"1080p"_s);
+    m_ui->qualityFilter->addItem(u"4K"_s, u"4K"_s);
 
     m_ui->filterMode->clear();
 

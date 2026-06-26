@@ -765,6 +765,19 @@ void Preferences::setStoreOpenedSearchTabResults(const bool enabled)
     setValue(u"Search/StoreOpenedSearchTabResults"_s, enabled);
 }
 
+bool Preferences::isSearchQualityFilterEnabled() const
+{
+    return value(u"Search/QualityFilterEnabled"_s, false);
+}
+
+void Preferences::setSearchQualityFilterEnabled(const bool enabled)
+{
+    if (enabled == isSearchQualityFilterEnabled())
+        return;
+
+    setValue(u"Search/QualityFilterEnabled"_s, enabled);
+}
+
 bool Preferences::isWebUIEnabled() const
 {
 #ifdef DISABLE_GUI

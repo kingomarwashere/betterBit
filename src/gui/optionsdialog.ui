@@ -3344,6 +3344,13 @@ Disable encryption: Only connect to peers without protocol encryption</string>
                 </widget>
                </item>
                <item>
+                <widget class="QCheckBox" name="checkSearchQualityFilter">
+                 <property name="text">
+                  <string>Enable quality filter (1080p, 4K, etc.)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <layout class="QHBoxLayout" name="searchHistoryLayout">
                  <item>
                   <widget class="QLabel" name="searchHistoryLengthLabel">

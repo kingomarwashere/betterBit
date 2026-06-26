@@ -187,6 +187,8 @@ public:
     void setStoreOpenedSearchTabs(bool enabled);
     bool storeOpenedSearchTabResults() const;
     void setStoreOpenedSearchTabResults(bool enabled);
+    bool isSearchQualityFilterEnabled() const;
+    void setSearchQualityFilterEnabled(bool enabled);
 
     // HTTP Server
     bool isWebUIEnabled() const;

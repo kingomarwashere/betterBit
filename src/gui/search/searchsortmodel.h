@@ -78,6 +78,9 @@ public:
     //! \param maxLeeches maximal number of leechers, negative value to disable filtering
     void setLeechesFilter(int minLeeches, int maxLeeches);
 
+    //! \brief Filters results by quality tag in torrent name (e.g. "1080p", "4K"). Empty string disables filter.
+    void setQualityFilter(const QString &quality);
+
     bool isNameFilterEnabled() const;
 
     QString searchTerm() const;
@@ -99,6 +102,7 @@ private:
     int m_minSeeds = 0, m_maxSeeds = -1;
     int m_minLeeches = 0, m_maxLeeches = -1;
     qint64 m_minSize = 0, m_maxSize = -1;
+    QStringList m_qualityPatterns;
 
     Utils::Compare::NaturalLessThan<Qt::CaseInsensitive> m_naturalLessThan;
 };

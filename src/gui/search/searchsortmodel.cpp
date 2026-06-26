@@ -169,6 +169,27 @@ qint64 SearchSortModel::maxSize() const
     return m_maxSize;
 }
 
+void SearchSortModel::setQualityFilter(const QString &quality)
+{
+    QStringList patterns;
+    if (quality == u"4K"_s)
+        patterns = {u"4k"_s, u"2160p"_s, u"uhd"_s};
+    else if (!quality.isEmpty())
+        patterns = {quality};
+
+    if (m_qualityPatterns == patterns)
+        return;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+    beginFilterChange();
+    m_qualityPatterns = patterns;
+    endFilterChange(Direction::Rows);
+#else
+    m_qualityPatterns = patterns;
+    invalidateRowsFilter();
+#endif
+}
+
 bool SearchSortModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
     switch (sortColumn())
@@ -221,6 +242,15 @@ bool SearchSortModel::filterAcceptsRow(const int sourceRow, const QModelIndex &s
         const int leeches = sourceModel->data(sourceModel->index(sourceRow, LEECHES, sourceParent), UnderlyingDataRole).toInt();
         if (((m_minLeeches > 0) && (leeches < m_minLeeches))
             || ((m_maxLeeches > 0) && (leeches > m_maxLeeches)))
+            return false;
+    }
+
+    if (!m_qualityPatterns.isEmpty())
+    {
+        const QString name = sourceModel->data(sourceModel->index(sourceRow, NAME, sourceParent), UnderlyingDataRole).toString();
+        const bool matched = std::any_of(m_qualityPatterns.cbegin(), m_qualityPatterns.cend(),
+            [&name](const QString &p) { return name.contains(p, Qt::CaseInsensitive); });
+        if (!matched)
             return false;
     }
 
