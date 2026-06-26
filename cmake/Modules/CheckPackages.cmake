@@ -48,25 +48,26 @@ set_property(CACHE LibtorrentRasterbar_DIR PROPERTY TYPE PATH)
 # libtorrent targets are loaded so the exported dependency resolves correctly.
 find_package(Boost ${minBoostVersion} REQUIRED COMPONENTS json)
 
-# WebTorrent (WebRTC) support — detected by the presence of rtc_stream.hpp,
-# which only exists when libtorrent is built with webtorrent=ON.
-if (WEBTORRENT)
-    get_target_property(_lt_includes LibtorrentRasterbar::torrent-rasterbar INTERFACE_INCLUDE_DIRECTORIES)
-    list(GET _lt_includes 0 _lt_include_dir)
-    if (EXISTS "${_lt_include_dir}/libtorrent/aux_/rtc_stream.hpp")
-        message(STATUS "WebTorrent: libtorrent/aux_/rtc_stream.hpp found — WebRTC peer support enabled")
-        add_compile_definitions(BETTERBIT_WEBTORRENT TORRENT_USE_RTC=1)
-        # Force the custom libtorrent headers before Homebrew system paths so the
-        # compiler sees the webtorrent-capable settings_pack.hpp first.
-        include_directories(BEFORE "${_lt_include_dir}")
-    else()
-        message(WARNING
-            "WebTorrent: libtorrent at ${_lt_include_dir} was NOT built with webtorrent=ON "
-            "(libtorrent/aux_/rtc_stream.hpp not found).\n"
-            "Run scripts/build-webtorrent-deps.sh then re-configure with "
-            "-DCMAKE_PREFIX_PATH=~/.local/betterbit-deps to get WebTorrent support."
-        )
-    endif()
+# WebTorrent (WebRTC) is required — betterBit only builds against a libtorrent
+# that was compiled with webtorrent=ON. Run scripts/build-webtorrent-deps.sh first.
+get_target_property(_lt_includes LibtorrentRasterbar::torrent-rasterbar INTERFACE_INCLUDE_DIRECTORIES)
+list(GET _lt_includes 0 _lt_include_dir)
+if (EXISTS "${_lt_include_dir}/libtorrent/aux_/rtc_stream.hpp")
+    message(STATUS "WebTorrent: libtorrent/aux_/rtc_stream.hpp found — WebRTC peer support enabled")
+    add_compile_definitions(BETTERBIT_WEBTORRENT TORRENT_USE_RTC=1)
+    # Force the custom libtorrent headers before any system paths so the compiler
+    # sees the webtorrent-capable settings_pack.hpp first.
+    include_directories(BEFORE "${_lt_include_dir}")
+else()
+    message(FATAL_ERROR
+        "betterBit requires libtorrent built with WebTorrent (WebRTC) support.\n"
+        "libtorrent/aux_/rtc_stream.hpp not found in ${_lt_include_dir}.\n\n"
+        "Run the bundled build script first:\n"
+        "  ./scripts/build-webtorrent-deps.sh\n\n"
+        "Then re-configure with:\n"
+        "  cmake -B build -DCMAKE_BUILD_TYPE=Release "
+        "-DCMAKE_PREFIX_PATH=~/.local/betterbit-deps"
+    )
 endif()
 find_package(OpenSSL ${minOpenSSLVersion} REQUIRED)
 find_package(ZLIB ${minZlibVersion} REQUIRED)
