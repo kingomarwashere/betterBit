@@ -38,6 +38,35 @@ betterBit is a personal fork of qBittorrent with quality-of-life patches applied
 
 ---
 
+## Search
+
+betterBit ships 18 search engine plugins out of the box — no manual installation needed. Enable the search panel via **View → Search Engine**.
+
+| Plugin | Source |
+|--------|--------|
+| `piratebay` | The Pirate Bay |
+| `nyaa` | Nyaa.si — anime/manga |
+| `nyaasi` | Nyaa.si (mirror) |
+| `leetx` | 1337x |
+| `ettv` | ETTV |
+| `eztv` | EZTV — TV shows |
+| `kickasstorrents` | KickassTorrents |
+| `torrentgalaxy` | TorrentGalaxy |
+| `torlock` | Torlock |
+| `limetorrents` | LimeTorrents |
+| `bt4g` | BT4G |
+| `bitsearch` | Bitsearch |
+| `snowfl` | Snowfl |
+| `solidtorrents` | Solid Torrents |
+| `torrentdownload` | TorrentDownload |
+| `torrentscsv` | Torrents.csv |
+| `linuxtracker` | LinuxTracker — distros |
+| `eztv` | EZTV |
+
+Plugins live in [`src/searchengine/nova3/engines/`](src/searchengine/nova3/engines/) — drop any additional `.py` plugin there and it appears automatically.
+
+---
+
 ## Themes
 
 Two themes are bundled in the [`themes/`](themes/) directory.
