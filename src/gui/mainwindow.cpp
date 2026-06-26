@@ -222,7 +222,7 @@ MainWindow::MainWindow(IGUIApplication *app, const WindowState initialState, con
     // vSplitter->setChildrenCollapsible(false);
 
     auto *hSplitter = new QSplitter(Qt::Vertical, this);
-    hSplitter->setChildrenCollapsible(false);
+    hSplitter->setChildrenCollapsible(true);
     hSplitter->setFrameShape(QFrame::NoFrame);
 
     // Torrent filter
