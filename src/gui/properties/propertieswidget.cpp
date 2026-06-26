@@ -363,7 +363,10 @@ void PropertiesWidget::readSettings()
         hSplitter->setSizes(m_slideSizes);
     }
     const int currentTab = pref->getPropCurTab();
-    const bool visible = pref->getPropVisible();
+    // betterBit: force-hide the properties panel on first run regardless of stored state
+    const bool visible = pref->getBetterBitColumnDefaultsApplied()
+                         ? pref->getPropVisible()
+                         : false;
     m_ui->filesList->header()->restoreState(pref->getPropFileListState());
     m_tabBar->setCurrentIndex(currentTab);
     if (!visible)

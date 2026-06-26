@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QPushButton>
 #include <QWidget>
 
 #include "base/settingvalue.h"
@@ -136,6 +137,8 @@ private:
 
     SettingValue<NameFilteringMode> m_nameFilteringMode;
 
+    static constexpr int DEFAULT_RESULT_LIMIT = 67;
+
     QString m_id;
     QString m_searchPattern;
     QList<SearchResult> m_searchResults;
@@ -144,8 +147,10 @@ private:
     QStandardItemModel *m_searchListModel = nullptr;
     SearchSortModel *m_proxyModel = nullptr;
     LineEdit *m_lineEditSearchResultsFilter = nullptr;
+    QPushButton *m_showAllResultsBtn = nullptr;
     Status m_status = Status::Ready;
     bool m_noSearchResults = true;
+    bool m_resultLimitReached = false;
 };
 
 Q_DECLARE_METATYPE(SearchJobWidget::NameFilteringMode)

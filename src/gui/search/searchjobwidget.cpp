@@ -172,6 +172,24 @@ SearchJobWidget::SearchJobWidget(const QString &id, IGUIApplication *app, QWidge
     connect(m_lineEditSearchResultsFilter, &LineEdit::textChanged, this, &SearchJobWidget::filterSearchResults);
     m_ui->horizontalLayout->insertWidget(0, m_lineEditSearchResultsFilter);
 
+    m_showAllResultsBtn = new QPushButton(this);
+    m_showAllResultsBtn->setVisible(false);
+    m_showAllResultsBtn->setFlat(true);
+    connect(m_showAllResultsBtn, &QPushButton::clicked, this, [this]
+    {
+        m_resultLimitReached = false;
+        m_showAllResultsBtn->setVisible(false);
+        // Re-add the buffered results that were held back
+        const int alreadyShown = m_searchListModel->rowCount();
+        if (m_searchResults.size() > alreadyShown)
+        {
+            const QList<SearchResult> remaining = m_searchResults.mid(alreadyShown);
+            m_searchResults.resize(alreadyShown);
+            appendSearchResults(remaining);
+        }
+    });
+    m_ui->horizontalLayout->addWidget(m_showAllResultsBtn);
+
     connect(m_ui->filterMode, qOverload<int>(&QComboBox::currentIndexChanged), this, &SearchJobWidget::updateNameFilter);
     connect(m_ui->minSeeds, &QAbstractSpinBox::editingFinished, this, &SearchJobWidget::updateSeedsFilter);
     connect(m_ui->minSeeds, qOverload<int>(&QSpinBox::valueChanged), this, &SearchJobWidget::updateSeedsFilter);
@@ -290,6 +308,8 @@ void SearchJobWidget::assignSearchHandler(SearchHandler *searchHandler)
         return;
 
     m_searchResults.clear();
+    m_resultLimitReached = false;
+    m_showAllResultsBtn->setVisible(false);
     m_searchListModel->removeRows(0, m_searchListModel->rowCount());
     delete m_searchHandler;
 
@@ -645,8 +665,28 @@ void SearchJobWidget::searchFailed([[maybe_unused]] const QString &errorMessage)
 
 void SearchJobWidget::appendSearchResults(const QList<SearchResult> &results)
 {
-    for (const SearchResult &result : results)
+    for (qsizetype i = 0; i < results.size(); ++i)
     {
+        const SearchResult &result = results[i];
+
+        // Cap at DEFAULT_RESULT_LIMIT — buffer the rest for "Show all"
+        if (!m_resultLimitReached && m_searchListModel->rowCount() >= DEFAULT_RESULT_LIMIT)
+        {
+            m_resultLimitReached = true;
+            m_searchResults.append(results.mid(i));
+            m_showAllResultsBtn->setText(tr("Show all %1 results").arg(m_searchResults.size()));
+            m_showAllResultsBtn->setVisible(true);
+            updateResultsCount();
+            return;
+        }
+
+        if (m_resultLimitReached)
+        {
+            m_searchResults.append(result);
+            m_showAllResultsBtn->setText(tr("Show all %1 results").arg(m_searchResults.size()));
+            continue;
+        }
+
         // Add item to search result list
         int row = m_searchListModel->rowCount();
         m_searchListModel->insertRow(row);
@@ -672,9 +712,10 @@ void SearchJobWidget::appendSearchResults(const QList<SearchResult> &results)
         setModelData(SearchSortModel::SEEDS, QString::number(result.nbSeeders), result.nbSeeders, (Qt::AlignRight | Qt::AlignVCenter));
         setModelData(SearchSortModel::LEECHES, QString::number(result.nbLeechers), result.nbLeechers, (Qt::AlignRight | Qt::AlignVCenter));
         setModelData(SearchSortModel::PUB_DATE, QLocale().toString(result.pubDate.toLocalTime(), QLocale::ShortFormat), result.pubDate);
+
+        m_searchResults.append(result);
     }
 
-    m_searchResults.append(results);
     updateResultsCount();
 }
 
