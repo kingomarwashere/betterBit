@@ -152,15 +152,31 @@ TransferListWidget::TransferListWidget(IGUIApplication *app, QWidget *parent)
     header()->setStretchLastSection(false);
     header()->setTextElideMode(Qt::ElideRight);
 
-    // Default hidden columns
+    // Default hidden columns — betterBit ships with a minimal view:
+    // only Clean Name (TR_DISPLAY_NAME) and Progress (TR_PROGRESS) visible.
+    // All other columns are available via right-click on the header.
     if (!columnLoaded)
     {
-        setColumnHidden(TransferListModel::TR_CREATE_DATE, true);
+        // hide everything except TR_DISPLAY_NAME and TR_PROGRESS
+        setColumnHidden(TransferListModel::TR_QUEUE_POSITION, true);
+        setColumnHidden(TransferListModel::TR_NAME, true);
+        setColumnHidden(TransferListModel::TR_SIZE, true);
+        setColumnHidden(TransferListModel::TR_TOTAL_SIZE, true);
+        setColumnHidden(TransferListModel::TR_STATUS, true);
+        setColumnHidden(TransferListModel::TR_SEEDS, true);
+        setColumnHidden(TransferListModel::TR_PEERS, true);
+        setColumnHidden(TransferListModel::TR_DLSPEED, true);
+        setColumnHidden(TransferListModel::TR_UPSPEED, true);
+        setColumnHidden(TransferListModel::TR_ETA, true);
+        setColumnHidden(TransferListModel::TR_RATIO, true);
+        setColumnHidden(TransferListModel::TR_POPULARITY, true);
+        setColumnHidden(TransferListModel::TR_CATEGORY, true);
+        setColumnHidden(TransferListModel::TR_TAGS, true);
         setColumnHidden(TransferListModel::TR_ADD_DATE, true);
         setColumnHidden(TransferListModel::TR_SEED_DATE, true);
-        setColumnHidden(TransferListModel::TR_UPLIMIT, true);
-        setColumnHidden(TransferListModel::TR_DLLIMIT, true);
         setColumnHidden(TransferListModel::TR_TRACKER, true);
+        setColumnHidden(TransferListModel::TR_DLLIMIT, true);
+        setColumnHidden(TransferListModel::TR_UPLIMIT, true);
         setColumnHidden(TransferListModel::TR_AMOUNT_DOWNLOADED, true);
         setColumnHidden(TransferListModel::TR_AMOUNT_UPLOADED, true);
         setColumnHidden(TransferListModel::TR_AMOUNT_DOWNLOADED_SESSION, true);
@@ -168,17 +184,21 @@ TransferListWidget::TransferListWidget(IGUIApplication *app, QWidget *parent)
         setColumnHidden(TransferListModel::TR_AMOUNT_LEFT, true);
         setColumnHidden(TransferListModel::TR_TIME_ELAPSED, true);
         setColumnHidden(TransferListModel::TR_SAVE_PATH, true);
+        setColumnHidden(TransferListModel::TR_COMPLETED, true);
+        setColumnHidden(TransferListModel::TR_RATIO_LIMIT, true);
+        setColumnHidden(TransferListModel::TR_SEEN_COMPLETE_DATE, true);
+        setColumnHidden(TransferListModel::TR_LAST_ACTIVITY, true);
+        setColumnHidden(TransferListModel::TR_AVAILABILITY, true);
         setColumnHidden(TransferListModel::TR_DOWNLOAD_PATH, true);
         setColumnHidden(TransferListModel::TR_INFOHASH_V1, true);
         setColumnHidden(TransferListModel::TR_INFOHASH_V2, true);
-        setColumnHidden(TransferListModel::TR_COMPLETED, true);
-        setColumnHidden(TransferListModel::TR_RATIO_LIMIT, true);
-        setColumnHidden(TransferListModel::TR_POPULARITY, true);
-        setColumnHidden(TransferListModel::TR_SEEN_COMPLETE_DATE, true);
-        setColumnHidden(TransferListModel::TR_LAST_ACTIVITY, true);
-        setColumnHidden(TransferListModel::TR_TOTAL_SIZE, true);
         setColumnHidden(TransferListModel::TR_REANNOUNCE, true);
         setColumnHidden(TransferListModel::TR_PRIVATE, true);
+        setColumnHidden(TransferListModel::TR_CREATE_DATE, true);
+        setColumnHidden(TransferListModel::TR_DOWNLOAD_DURATION, true);
+        setColumnHidden(TransferListModel::TR_ADD_DATE_RELATIVE, true);
+        setColumnHidden(TransferListModel::TR_STALLED_FOR, true);
+        setColumnHidden(TransferListModel::TR_FILE_TYPES, true);
     }
 
     //Ensure that at least one column is visible at all times
