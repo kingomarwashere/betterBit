@@ -86,6 +86,7 @@
 #include "optionsdialog.h"
 #include "powermanagement/powermanagement.h"
 #include "properties/peerlistwidget.h"
+#include "matrixrainwidget.h"
 #include "properties/propertieswidget.h"
 #include "properties/proptabbar.h"
 #include "rss/rsswidget.h"
@@ -386,6 +387,28 @@ MainWindow::MainWindow(IGUIApplication *app, const WindowState initialState, con
     });
     m_ui->menuView->addSeparator();
     m_ui->menuView->addAction(detailsAction);
+
+    // betterBit: Matrix rain — active when theme filename contains "matrix"
+    const auto updateMatrixRain = [this]()
+    {
+        const QString themePath = Preferences::instance()->customUIThemePath().toString().toLower();
+        const bool isMatrix = themePath.contains(u"matrix"_s);
+        if (isMatrix && !m_matrixRain)
+        {
+            m_matrixRain = new MatrixRainWidget(centralWidget());
+            m_matrixRain->resize(centralWidget()->size());
+            m_matrixRain->lower();
+            m_matrixRain->show();
+        }
+        else if (!isMatrix && m_matrixRain)
+        {
+            delete m_matrixRain;
+            m_matrixRain = nullptr;
+        }
+    };
+    updateMatrixRain();
+    connect(UIThemeManager::instance(), &UIThemeManager::themeChanged, this, updateMatrixRain);
+
     m_ui->actionSpeedInTitleBar->setChecked(pref->speedInTitleBar());
     m_ui->actionRSSReader->setChecked(pref->isRSSWidgetEnabled());
     m_ui->actionSearchWidget->setChecked(pref->isSearchEnabled());
@@ -812,7 +835,7 @@ void MainWindow::toggleFocusBetweenLineEdits()
 
 void MainWindow::updateNbTorrents()
 {
-    m_tabs->setTabText(0, tr("Transfers (%1)").arg(m_transferListWidget->getSourceModel()->rowCount()));
+    m_tabs->setTabText(0, tr("Library (%1)").arg(m_transferListWidget->getSourceModel()->rowCount()));
 }
 
 void MainWindow::on_actionDocumentation_triggered() const
@@ -1130,6 +1153,13 @@ void MainWindow::on_actionStatistics_triggered()
         m_statsDlg->setAttribute(Qt::WA_DeleteOnClose);
         m_statsDlg->show();
     }
+}
+
+void MainWindow::resizeEvent(QResizeEvent *e)
+{
+    QMainWindow::resizeEvent(e);
+    if (m_matrixRain && centralWidget())
+        m_matrixRain->resize(centralWidget()->size());
 }
 
 void MainWindow::showEvent(QShowEvent *e)

@@ -51,6 +51,7 @@ class DownloadFromURLDialog;
 class ExecutionLogWidget;
 class LineEdit;
 class OptionsDialog;
+class MatrixRainWidget;
 class PowerManagement;
 class ProgramUpdater;
 class PropertiesWidget;
@@ -191,6 +192,7 @@ private:
     void populateDesktopIntegrationMenu();
 
     void closeEvent(QCloseEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
     void showEvent(QShowEvent *) override;
     void keyPressEvent(QKeyEvent *event) override;
     bool event(QEvent *e) override;
@@ -231,6 +233,7 @@ private:
     TransferListWidget *m_transferListWidget = nullptr;
     TransferListFiltersWidget *m_transferListFiltersWidget = nullptr;
     PropertiesWidget *m_propertiesWidget = nullptr;
+    MatrixRainWidget *m_matrixRain = nullptr;
     bool m_displaySpeedInTitle = false;
     bool m_forceExit = false;
     bool m_uiLocked = false;

@@ -97,6 +97,7 @@ add_library(qbt_gui STATIC
     search/searchjobwidget.h
     search/searchsortmodel.h
     search/searchwidget.h
+    matrixrainwidget.h
     shutdownconfirmdialog.h
     speedlimitdialog.h
     statsdialog.h
@@ -200,6 +201,7 @@ add_library(qbt_gui STATIC
     search/searchjobwidget.cpp
     search/searchsortmodel.cpp
     search/searchwidget.cpp
+    matrixrainwidget.cpp
     shutdownconfirmdialog.cpp
     speedlimitdialog.cpp
     statsdialog.cpp

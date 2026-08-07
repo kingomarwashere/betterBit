@@ -72,7 +72,7 @@ lt::storage_holder CustomDiskIOThread::new_torrent(const lt::storage_params &sto
 {
     lt::storage_holder storageHolder = m_nativeDiskIO->new_torrent(storageParams, torrent);
 
-    const Path savePath {storageParams.path};
+    const Path savePath {std::string(storageParams.path)};
     m_storageData[storageHolder] =
     {
         savePath,

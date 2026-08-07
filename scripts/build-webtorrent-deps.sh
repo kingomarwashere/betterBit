@@ -47,7 +47,6 @@ cmake -S "${LT_SRC}" -B "${LT_BUILD}" \
     -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
     -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
     -Dwebtorrent=ON \
-    -Ddeprecated-functions=OFF \
     -Dpython-bindings=OFF \
     -Dbuild_tests=OFF \
     -Dbuild_examples=OFF \

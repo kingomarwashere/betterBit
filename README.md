@@ -43,7 +43,7 @@ betterBit is a personal fork of qBittorrent with quality-of-life patches applied
 
 ## Search
 
-betterBit ships 18 search engine plugins out of the box and opens the search panel by default — just start typing.
+betterBit ships 20 search engine plugins out of the box and opens the search panel by default — just start typing.
 
 | Plugin | Source |
 |--------|--------|
@@ -64,7 +64,8 @@ betterBit ships 18 search engine plugins out of the box and opens the search pan
 | `torrentdownload` | TorrentDownload |
 | `torrentscsv` | Torrents.csv |
 | `linuxtracker` | LinuxTracker — distros |
-| `eztv` | EZTV |
+| `sukebei` | Sukebei — Nyaa adult sister site (18+) |
+| `pornbay` | PornBay — TPB adult categories via apibay (18+) |
 
 Plugins live in [`src/searchengine/nova3/engines/`](src/searchengine/nova3/engines/) — drop any additional `.py` plugin there and it appears automatically.
 
